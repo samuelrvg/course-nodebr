@@ -34,13 +34,14 @@ function obterTelefone(idUsuario){
 }
 
 function obterEndereco(idUsuario, callback){
-    setTimeout(() => {
-        return callback(null, {
-            rua:'x52',
-            numero: 8
-        })
-    }, 2000)
-
+    return new Promise(function (resolve, reject){
+        setTimeout(() => {
+            return resolve({
+                rua:'x52',
+                numero: 8
+            })
+        }, 2000)
+    })
 }
 
 const usuarioPromisse = obterUsuario()
@@ -74,6 +75,31 @@ usuarioPromisse
     }).catch(function(error){
         console.log('Deu ruim!', error)
     })
+
+//add async -> automaticamente retorna uma promise
+main()
+
+async function main(){
+    try{
+        console.time('medida-promise')
+        const usuario = await obterUsuario()
+        // const telefone = await obterTelefone(usuario.id)
+        // const endereco = await obterEndereco(usuario.id)
+        const resultado = await Promise.all([obterEndereco(usuario.id), obterTelefone(usuario.id)])
+        const endereco = resultado[0]
+        const telefone = resultado[1]
+        
+        console.log(`
+            Nome: ${usuario.nome}
+            Telefone: ${telefone.telefone}
+            endereco: ${endereco.numero}
+        `)
+        console.timeEnd('medida-promise')
+    }
+    catch(error){
+        console.log('deu ruim', error)
+    }
+}
 
 // obterUsuario(function resolverUsuario(erro, usuario){
 
