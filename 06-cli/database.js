@@ -47,6 +47,20 @@ class Database {
         return dadosFiltrados
     }
 
+    async remover(id) {
+        if (!id) {
+            return await this.escreverArquivo([])
+        }
+
+        const dados = await this.obterDadosArquivo()
+        const heroi = dados.findIndex(item => item.id === parseInt(id))
+        if (heroi === -1) {
+            throw Error('O heroi não existe')
+        }
+        dados.splice(heroi, 1)
+
+        return await this.escreverArquivo(dados)
+    }
 
 }
 
