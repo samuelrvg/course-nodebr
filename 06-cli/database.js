@@ -62,6 +62,20 @@ class Database {
         return await this.escreverArquivo(dados)
     }
 
+    async atualizar(id, modificacoes) {
+        const dados = await this.obterDadosArquivo()
+        const heroi = dados.findIndex(item => item.id === parseInt(id))
+        if (heroi === -1) {
+            throw Error('O heroi não existe')
+        }
+        const atual = dados[heroi]
+        const objetoAtualizado = {
+            ...atual,
+            ...modificacoes,
+        }
+        dados.splice(heroi, 1)
+        return await this.escreverArquivo([...dados, objetoAtualizado])
+    }
 }
 
 //const database = new Database()
